@@ -1,19 +1,25 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import Intro from "../screens/Intro";
+import SignIn from "../screens/SignIn";
 import Home from "../screens/Home";
 import Paths from "../screens/Paths";
 import Quiz from "../screens/Quiz";
 import Forest from "../screens/Forest";
 import Profile from "../screens/Profile";
 import Journal from "../screens/Journal";
+import IntroTwo from "../screens/IntroTwo";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const MainNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Intro" component={Intro} />
+        <Stack.Screen name="IntroTwo" component={IntroTwo} />
+        <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Paths" component={Paths} />
         <Stack.Screen name="Quiz" component={Quiz} />

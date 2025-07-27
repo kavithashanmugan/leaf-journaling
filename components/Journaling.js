@@ -13,6 +13,8 @@ export default function Journaling() {
   const [title, setTitle] = useState("");
   const [journalEntry, setJournalEntry] = useState("");
 
+  const handleSave = () => {};
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>
