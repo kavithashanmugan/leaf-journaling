@@ -1,13 +1,18 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import React from "react";
 import { colors } from "../constants/colors";
 
-export default function Quote({ quoteText }) {
+export default function Poem({ title, author, poem }) {
   return (
     <View style={styles.container}>
-      <View style={styles.quoteContainer}>
-        <Text style={styles.quoteText}>{quoteText}</Text>
-        <Text style={styles.authorText}>-- Kate Sheppard</Text>
+      <View style={styles.poemContainer}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.author}>{author}</Text>
+        {poem.map((line, index) => (
+          <Text key={index} style={styles.line}>
+            {line}
+          </Text>
+        ))}
       </View>
 
       <Image
@@ -25,7 +30,7 @@ export default function Quote({ quoteText }) {
 const styles = StyleSheet.create({
   container: {
     margin: 15,
-    paddingTop: 15,
+    paddingVertical: 15,
     backgroundColor: colors.white,
     borderRadius: 6,
     flexDirection: "row",
@@ -55,20 +60,27 @@ const styles = StyleSheet.create({
     height: 100,
     objectFit: "contain",
   },
-  quoteContainer: {
+  poemContainer: {
     width: "70%",
     alignItems: "center",
   },
-  quoteText: {
-    textAlign: "center",
-    color: colors.blue,
-    zIndex: 2,
-  },
-  authorText: {
-    marginTop: 10,
-    textAlign: "center",
+  title: {
     color: colors.blue,
     fontSize: 18,
+    fontWeight: 700,
+    textAlign: "center",
+    zIndex: 2,
+  },
+  author: {
+    color: colors.blue,
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 10,
+    zIndex: 2,
+  },
+  line: {
+    color: colors.blue,
+    textAlign: "center",
     zIndex: 2,
   },
 });
