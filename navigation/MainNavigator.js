@@ -10,6 +10,9 @@ import Forest from "../screens/Forest";
 import Profile from "../screens/Profile";
 import Journal from "../screens/Journal";
 import IntroTwo from "../screens/IntroTwo";
+import PathDay from "../screens/PathDay";
+import Question from "../screens/Question";
+import Leaderboard from "../screens/Leaderboard";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +29,9 @@ const MainNavigator = () => {
         <Stack.Screen name="Forest" component={Forest} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Journal" component={Journal} />
+        <Stack.Screen name="PathDay" component={PathDay} />
+        <Stack.Screen name="Question" component={Question} />
+        <Stack.Screen name="Leaderboard" component={Leaderboard} />
       </Stack.Navigator>
     </NavigationContainer>
   );
