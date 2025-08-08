@@ -12,17 +12,44 @@ import ForgotPasswordLink from "./ForgotPasswordLink";
 import TermsAndConditionsText from "./TermsAndConditionsText";
 import passwordVisible from "../../assets/images/passwordVisible.png";
 import passwordInvisible from "../../assets/images/passwordInvisible.png";
+import { useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
+import { supabase } from "../../api/supabase";
 
 const SignInForm = () => {
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("pass9876");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const email = useSelector((state) => state.user.emailAddress);
+
   const navigation = useNavigation();
 
-  const handleContinue = async () => {};
+  const handleContinue = async () => {
+    try {
+      let { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (data.user) {
+        navigation.navigate("Home");
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Invalid password",
+        });
+      }
+    } catch (error) {
+      console.error(error.message);
+      Toast.show({
+        type: "error",
+        text1: "Sorry, something went wrong",
+        text2: "Please try again in a few minutes",
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>

@@ -10,10 +10,10 @@ import { useState } from "react";
 import AuthButton from "./AuthButton";
 import ForgotPasswordLink from "./ForgotPasswordLink";
 import TermsAndConditionsText from "./TermsAndConditionsText";
-
+import { useDispatch, useSelector } from "react-redux";
 import passwordVisible from "../../assets/images/passwordVisible.png";
 import passwordInvisible from "../../assets/images/passwordInvisible.png";
-
+import { supabase } from "../../api/supabase";
 import { useNavigation } from "@react-navigation/native";
 
 const SignUpForm = () => {
@@ -22,6 +22,8 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const dispatch = useDispatch();
+  const storedEmail = useSelector((state) => state.user.emailAddress);
   const [email, setEmail] = useState(storedEmail);
 
   const [isUsernameEmpty, setIsUsernameEmpty] = useState(false);
@@ -47,6 +49,62 @@ const SignUpForm = () => {
     }
 
     setIsSubmitting(true);
+
+    try {
+      const { data: emailData, error: emailError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("email", email);
+
+      if (emailError && emailError.code !== "PGRST116") {
+        throw error;
+      }
+
+      if (emailData.length > 0) {
+        setEmailTaken(true);
+        return;
+      } else {
+        setEmailTaken(false);
+      }
+
+      const { data: usernameData, error: usernameError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("username", username);
+
+      if (usernameData.length > 0) {
+        setUsernameTaken(true);
+        return;
+      } else {
+        setUsernameTaken(false);
+      }
+
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email: email,
+          password: password,
+        });
+
+      if (signUpData) {
+        const { data: addUserData, error: addUserError } = await supabase
+          .from("profiles")
+          .insert([{ email: email, username: username }])
+          .select();
+
+        navigation.navigate("Home");
+      } else {
+        throw Error;
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Sorry, something went wrong",
+        text2: "Please try again in a few minutes",
+      });
+      console.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

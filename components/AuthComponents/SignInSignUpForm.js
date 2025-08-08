@@ -7,37 +7,55 @@ import {
   Image,
 } from "react-native";
 import { useState } from "react";
-import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { useDispatch } from "react-redux";
 
 import AuthButton from "./AuthButton";
 import ForgotPasswordLink from "./ForgotPasswordLink";
 import TermsAndConditionsText from "./TermsAndConditionsText";
+import { supabase } from "../../api/supabase";
+import { addEmail } from "../../store/userSlice";
 
 const SignInSignUpForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("rachel@example.com");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const navigation = useNavigation();
 
+  const dispatch = useDispatch();
+
   const handleContinue = async () => {
+    dispatch(addEmail(email));
+
+    setIsSubmitting(true);
     try {
-      await auth().signInWithEmailAndPassword(email, password);
-      console.log("User signed in successfully!");
-    } catch (error) {
-      if (error.code === "auth/invalid-email") {
-        console.log("That email address is invalid!");
-      } else if (error.code === "auth/user-not-found") {
-        console.log("No user found with that email.");
-      } else if (error.code === "auth/wrong-password") {
-        console.log("Incorrect password!");
-      } else {
-        console.error(error);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("email", email)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        throw error;
       }
-      // Display an error message to the user
+
+      if (data) {
+        // Email exists, redirect to sign-in page
+        navigation.navigate("SignIn", { type: "signIn" });
+      } else {
+        // Email does not exist, redirect to sign-up page
+        navigation.navigate("SignIn", { type: "signUp" });
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Sorry, something went wrong",
+        text2: "Please try again in a few minutes",
+      });
+      console.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -57,22 +75,6 @@ const SignInSignUpForm = () => {
         />
       </View>
 
-      <Text style={styles.inputNameText}>Password</Text>
-      <View style={[styles.emailInput, styles.passwordInput]}>
-        <TextInput
-          placeholder="Enter your password"
-          autoCapitalize="none"
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          value={password}
-        />
-        <TouchableOpacity onPress={() => setShowPassword((show) => !show)}>
-          <Image
-            source={showPassword ? passwordVisible : passwordInvisible}
-            style={styles.passwordIcon}
-          />
-        </TouchableOpacity>
-      </View>
       <AuthButton isSubmitting={isSubmitting} onPress={handleContinue}>
         Continue
       </AuthButton>

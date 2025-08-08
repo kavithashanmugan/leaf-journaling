@@ -7,13 +7,43 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
+
+import { addUserPoints, getUserId, getUserPoints } from "../api/userActions";
 import { colors } from "../constants/colors";
+import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
+import { addToStreak, storeJournalEntry } from "../api/journalActions";
 
 export default function Journaling() {
   const [title, setTitle] = useState("");
   const [journalEntry, setJournalEntry] = useState("");
+  const navigation = useNavigation();
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    if (journalEntry === "") {
+      Toast.show({
+        type: "info",
+        text1: "Please type something in your journal!",
+      });
+      return;
+    }
+    const words = journalEntry.split();
+    const numExtraPoints = Math.ceil(words.length / 50) * 5;
+    try {
+      await addUserPoints(numExtraPoints);
+      await storeJournalEntry(title, journalEntry);
+      const userId = await getUserId();
+      await addToStreak(userId);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Sorry, something went wrong",
+        text2: "Maybe try again later",
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -41,9 +71,12 @@ export default function Journaling() {
           style={styles.journal}
           multiline
           onChangeText={setJournalEntry}
+          submitBehavior="submit"
+          onSubmitEditing={handleSave}
+          returnKeyType="send"
         />
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save</Text>
       </TouchableOpacity>
     </View>
