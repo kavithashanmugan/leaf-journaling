@@ -13,6 +13,7 @@ import IntroTwo from "../screens/IntroTwo";
 import PathDay from "../screens/PathDay";
 import Question from "../screens/Question";
 import Leaderboard from "../screens/Leaderboard";
+import SavedJournalEntries from "../screens/SavedJournalEntries";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,10 @@ const MainNavigator = () => {
         <Stack.Screen name="PathDay" component={PathDay} />
         <Stack.Screen name="Question" component={Question} />
         <Stack.Screen name="Leaderboard" component={Leaderboard} />
+        <Stack.Screen
+          name="SavedJournalEntries"
+          component={SavedJournalEntries}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,29 +1,29 @@
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
-  TouchableOpacity,
   Image,
+  ImageBackground,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { AntDesign } from "@expo/vector-icons";
 
-import TopBar from "../components/TopBar";
-import BottomNav from "../components/BottomNav";
-import { useIsUser } from "../hooks/useIsUser";
-import { colors } from "../constants/colors";
-import ForestStats from "../components/ForestStats";
-import { getUserId, getUsername } from "../api/userActions";
 import { getStreak } from "../api/journalActions";
+import { getUserId, getUsername } from "../api/userActions";
+import BottomNav from "../components/BottomNav";
+import Friends from "../components/Friends";
 import ProgressTracking from "../components/ProgressTracking";
+import TopBar from "../components/TopBar";
+import { colors } from "../constants/colors";
 
-export default function Profile() {
+export default function Profile({ navigation }) {
   const [username, setUsername] = useState(null);
   const [streak, setStreak] = useState(0);
   const [screenOption, setScreenOption] = useState("friends");
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
   const { isPremiumMember } = useSelector((state) => state.user);
 
@@ -70,6 +70,7 @@ export default function Profile() {
                 Streak: {streak} {streak === 1 ? "day" : "days"}
               </Text>
             </View>
+
             <View style={styles.innerRowContainer}>
               <AntDesign
                 name={isPremiumMember ? "star" : "staro"}
@@ -80,6 +81,41 @@ export default function Profile() {
                 {isPremiumMember ? "Premium plan" : "Free plan"}
               </Text>
             </View>
+          </View>
+          <View style={styles.accountSection}>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderBottomLeftRadius: accountMenuOpen ? 0 : 6,
+                  borderBottomRightRadius: accountMenuOpen ? 0 : 6,
+                },
+              ]}
+              onPress={() => setAccountMenuOpen((is) => !is)}
+            >
+              <Text style={styles.menuText}>Account</Text>
+              <FontAwesome
+                name={accountMenuOpen ? "angle-up" : "angle-down"}
+                size={24}
+                color={colors.blue}
+              />
+            </TouchableOpacity>
+            {accountMenuOpen && (
+              <View style={styles.menu}>
+                <TouchableOpacity style={styles.menuItem}>
+                  <Text style={styles.menuText}>Subscription</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => navigation.navigate("SavedJournalEntries")}
+                >
+                  <Text style={styles.menuText}>Saved Journal Entries</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem}>
+                  <Text style={styles.menuText}>Delete Account</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
           <View style={styles.screenOptionsContainer}>
             <TouchableOpacity
@@ -139,6 +175,7 @@ export default function Profile() {
             </TouchableOpacity>
           </View>
           {screenOption === "progress" && <ProgressTracking />}
+          {screenOption === "friends" && <Friends />}
         </ScrollView>
       </ImageBackground>
       <BottomNav activeScreen="profile" />
@@ -204,5 +241,39 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontSize: 14,
     lineHeight: 20,
+  },
+  accountSection: {
+    position: "relative",
+  },
+  button: {
+    marginHorizontal: 20,
+    height: 50,
+    backgroundColor: colors.yellow,
+    flexDirection: "row",
+    gap: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 6,
+  },
+  menuText: {
+    color: colors.blue,
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "500",
+  },
+  menu: {
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
+    backgroundColor: colors.white,
+    position: "absolute",
+    top: 50,
+    left: 20,
+    right: 20,
+    zIndex: 1000,
+  },
+  menuItem: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
