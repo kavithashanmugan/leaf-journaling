@@ -14,6 +14,7 @@ import PathDay from "../screens/PathDay";
 import Question from "../screens/Question";
 import Leaderboard from "../screens/Leaderboard";
 import SavedJournalEntries from "../screens/SavedJournalEntries";
+import MasteryQuiz from "../screens/MasteryQuiz";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ const MainNavigator = () => {
           name="SavedJournalEntries"
           component={SavedJournalEntries}
         />
+        <Stack.Screen name="MasteryQuiz" component={MasteryQuiz} />
       </Stack.Navigator>
     </NavigationContainer>
   );

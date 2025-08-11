@@ -18,6 +18,7 @@ import Friends from "../components/Friends";
 import ProgressTracking from "../components/ProgressTracking";
 import TopBar from "../components/TopBar";
 import { colors } from "../constants/colors";
+import WeeklyReport from "../components/WeeklyReport";
 
 export default function Profile({ navigation }) {
   const [username, setUsername] = useState(null);
@@ -176,6 +177,7 @@ export default function Profile({ navigation }) {
           </View>
           {screenOption === "progress" && <ProgressTracking />}
           {screenOption === "friends" && <Friends />}
+          {screenOption === "report" && <WeeklyReport />}
         </ScrollView>
       </ImageBackground>
       <BottomNav activeScreen="profile" />

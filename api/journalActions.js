@@ -78,3 +78,28 @@ export const getAllJournalEntries = async () => {
 
   return data;
 };
+
+export const getWeeklyStreak = async () => {
+  const userId = await getUserId();
+
+  const today = new Date();
+  const datesObj = {};
+
+  for (let i = 0; i < 7; i++) {
+    const date = subDays(today, i);
+
+    const formattedDate = format(date, "yyyy-MM-dd");
+    const { data } = await supabase
+      .from("journal_entries")
+      .select("created_at_date_only")
+      .eq("created_at_date_only", formattedDate)
+      .eq("user_id", userId);
+    if (data.length > 0) {
+      datesObj[formattedDate] = true;
+    } else {
+      datesObj[formattedDate] = false;
+    }
+  }
+
+  return datesObj;
+};
