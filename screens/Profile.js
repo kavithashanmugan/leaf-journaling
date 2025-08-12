@@ -23,7 +23,7 @@ import WeeklyReport from "../components/WeeklyReport";
 export default function Profile({ navigation }) {
   const [username, setUsername] = useState(null);
   const [streak, setStreak] = useState(0);
-  const [screenOption, setScreenOption] = useState("friends");
+  const [screenOption, setScreenOption] = useState("report");
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
   const { isPremiumMember } = useSelector((state) => state.user);

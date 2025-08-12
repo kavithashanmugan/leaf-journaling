@@ -14,70 +14,22 @@ import { colors } from "../constants/colors";
 import MasteryQuizItem from "../components/MasteryQuizItem";
 import { addMasteryQuizItem } from "../api/userActions";
 
-const MASTERY_QUIZ_QUESTIONS = [
-  {
-    id: 1,
-    heading: "Self-Reflection & Awareness",
-    body: "How well do you feel you understand your thoughts and emotions after journaling and poetry exploration?",
-    color: "#8AAC66",
-    name: "reflection_awareness",
-  },
-  {
-    id: 2,
-    heading: "Critical Thinking",
-    body: "How effectively can you analyse and interpret personal experiences and poetic themes?",
-    color: "#9747FF",
-    name: "critical_thinking",
-  },
-  {
-    id: 3,
-    heading: "Emotional Expression",
-    body: "How comfortable are you expressing your feelings and insights creatively and authentically?",
-    color: "#58ADD4",
-    name: "emotional_expression",
-  },
-  {
-    id: 4,
-    heading: "Memory & Self-Discovery",
-    body: "Have you created personal memory capsules that reflect your life journey and growth?",
-    color: "#FFCA35",
-    name: "memory",
-  },
-  {
-    id: 5,
-    heading: "Creative Engagement",
-    body: "How often do you engage with classic poems to foster inspiration and introspection?",
-    color: "#E5E5ED",
-    name: "creative_engagement",
-  },
-  {
-    id: 6,
-    heading: "Mindfulness & Presence",
-    body: "How aware are you of the present moment through your reflective writing practices?",
-    color: "#85C441",
-    name: "mindfulness",
-  },
-  {
-    id: 7,
-    heading: "Goal Setting & Personal Growth",
-    body: "Have you identified areas for development and set intentions for ongoing self-exploration?",
-    color: "#D9D785",
-    name: "goals",
-  },
-];
-
-export default function MasteryQuiz() {
+export default function MasteryQuiz({ route, navigation }) {
   const [quizAnswers, setQuizAnswers] = useState({});
+
+  const { questions } = route.params;
 
   const handleSelectAnswer = (name, response) => {
     setQuizAnswers((prev) => ({ ...prev, [name]: response }));
   };
 
   const handleSave = async () => {
-    for (let question of MASTERY_QUIZ_QUESTIONS) {
+    for (let question of questions) {
       const quizAnswerResponse = quizAnswers[question.name] ?? "0";
-      console.log(question["name"], quizAnswerResponse);
+
       await addMasteryQuizItem(question.name, quizAnswerResponse);
+
+      navigation.navigate("Profile");
     }
   };
 
@@ -100,13 +52,14 @@ export default function MasteryQuiz() {
                 each skill.
               </Text>
             </View>
-            {MASTERY_QUIZ_QUESTIONS.map((question) => (
+            {questions.map((question) => (
               <MasteryQuizItem
                 key={question.id}
                 color={question.color}
                 heading={question.heading}
                 name={question.name}
                 onSelect={handleSelectAnswer}
+                answer={quizAnswers[question.name]}
               >
                 {question.body}
               </MasteryQuizItem>

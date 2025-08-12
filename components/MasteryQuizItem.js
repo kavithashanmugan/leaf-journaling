@@ -7,6 +7,7 @@ export default function MasteryQuizItem({
   name,
   onSelect,
   children,
+  answer = null,
 }) {
   return (
     <View style={styles.container}>
@@ -17,22 +18,57 @@ export default function MasteryQuizItem({
       <Text style={styles.bodyText}>{children}</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.button, styles.dontKnow]}
+          style={[
+            styles.button,
+            styles.dontKnow,
+            {
+              backgroundColor:
+                answer && answer === "0" ? colors.white : "transparent",
+            },
+          ]}
           onPress={() => onSelect(name, "0")}
         >
           <Text style={styles.buttonText}>Don't Know</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, styles.low]}
+          style={[
+            styles.button,
+            styles.low,
+            {
+              backgroundColor:
+                answer && answer === "L" ? "#58ADD4" : "transparent",
+            },
+          ]}
           onPress={() => onSelect(name, "L")}
         >
-          <Text style={styles.buttonText}>Low</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              { color: answer && answer === "L" ? colors.white : colors.black },
+            ]}
+          >
+            Low
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, styles.high]}
+          style={[
+            styles.button,
+            styles.high,
+            {
+              backgroundColor:
+                answer && answer === "H" ? colors.blue : "transparent",
+            },
+          ]}
           onPress={() => onSelect(name, "H")}
         >
-          <Text style={styles.buttonText}>High</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              { color: answer && answer === "H" ? colors.white : colors.black },
+            ]}
+          >
+            High
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -75,7 +111,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   buttonText: {
-    color: colors.blue,
     fontSize: 12,
     fontWeight: "600",
   },

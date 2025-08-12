@@ -170,8 +170,6 @@ export const getFriendsInitiatedByOther = async () => {
 };
 
 export const addMasteryQuizItem = async (name, response) => {
-  const userId = await getUserId();
-
   const { data } = await supabase.from("mastery_quiz").select("id");
 
   if (data.length > 0) {
@@ -180,5 +178,15 @@ export const addMasteryQuizItem = async (name, response) => {
       .upsert({ id: data[0]["id"], [name]: response });
   } else {
     await supabase.from("mastery_quiz").insert({ [name]: response });
+  }
+};
+
+export const getMasteryQuizScores = async () => {
+  const { data } = await supabase.from("mastery_quiz").select("*");
+
+  if (data.length > 0) {
+    return data[0];
+  } else {
+    return {};
   }
 };

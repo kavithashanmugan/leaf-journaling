@@ -6,9 +6,64 @@ import { useNavigation } from "@react-navigation/native";
 import { colors } from "../constants/colors";
 import { getWeeklyStreak } from "../api/journalActions";
 import WeeklyStreakItem from "./WeeklyStreakItem";
+import { getMasteryQuizScores } from "../api/userActions";
+import WeeklyQuizItem from "./WeeklyQuizItem";
+
+const MASTERY_QUIZ_QUESTIONS = [
+  {
+    id: 1,
+    heading: "Self-Reflection & Awareness",
+    body: "How well do you feel you understand your thoughts and emotions after journaling and poetry exploration?",
+    color: "#8AAC66",
+    name: "reflection_awareness",
+  },
+  {
+    id: 2,
+    heading: "Critical Thinking",
+    body: "How effectively can you analyse and interpret personal experiences and poetic themes?",
+    color: "#9747FF",
+    name: "critical_thinking",
+  },
+  {
+    id: 3,
+    heading: "Emotional Expression",
+    body: "How comfortable are you expressing your feelings and insights creatively and authentically?",
+    color: "#58ADD4",
+    name: "emotional_expression",
+  },
+  {
+    id: 4,
+    heading: "Memory & Self-Discovery",
+    body: "Have you created personal memory capsules that reflect your life journey and growth?",
+    color: "#FFCA35",
+    name: "memory",
+  },
+  {
+    id: 5,
+    heading: "Creative Engagement",
+    body: "How often do you engage with classic poems to foster inspiration and introspection?",
+    color: "#E5E5ED",
+    name: "creative_engagement",
+  },
+  {
+    id: 6,
+    heading: "Mindfulness & Presence",
+    body: "How aware are you of the present moment through your reflective writing practices?",
+    color: "#85C441",
+    name: "mindfulness",
+  },
+  {
+    id: 7,
+    heading: "Goal Setting & Personal Growth",
+    body: "Have you identified areas for development and set intentions for ongoing self-exploration?",
+    color: "#D9D785",
+    name: "goals",
+  },
+];
 
 export default function WeeklyReport() {
   const [streakArray, setStreakArray] = useState({});
+  const [masteryScores, setMasteryScores] = useState([]);
 
   const navigation = useNavigation();
 
@@ -16,6 +71,21 @@ export default function WeeklyReport() {
     const fetchData = async () => {
       const dailyStreak = await getWeeklyStreak();
       setStreakArray(dailyStreak);
+
+      const quizScores = await getMasteryQuizScores();
+      const namesAndColors = {};
+      for (let question of MASTERY_QUIZ_QUESTIONS) {
+        namesAndColors[question.name] = question.color;
+      }
+
+      for (let key in quizScores) {
+        if (Object.keys(namesAndColors).includes(key)) {
+          setMasteryScores((prev) => ({
+            ...prev,
+            [namesAndColors[key]]: quizScores[key],
+          }));
+        }
+      }
     };
     try {
       fetchData();
@@ -58,10 +128,19 @@ export default function WeeklyReport() {
           />
           <Text style={styles.headingText}>Mastered Skills</Text>
         </View>
+        <View style={styles.markersContainer}>
+          {Object.keys(masteryScores).map((item) => (
+            <WeeklyQuizItem color={item} score={masteryScores[item]} />
+          ))}
+        </View>
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("MasteryQuiz")}
+        onPress={() =>
+          navigation.navigate("MasteryQuiz", {
+            questions: MASTERY_QUIZ_QUESTIONS,
+          })
+        }
       >
         <Text style={styles.buttonText}>Check Your Mastery</Text>
       </TouchableOpacity>
