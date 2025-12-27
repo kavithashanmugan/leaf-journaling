@@ -15,6 +15,7 @@ import Question from "../screens/Question";
 import Leaderboard from "../screens/Leaderboard";
 import SavedJournalEntries from "../screens/SavedJournalEntries";
 import MasteryQuiz from "../screens/MasteryQuiz";
+import PaywallScreen from "../screens/PaywallScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const MainNavigator = () => {
           component={SavedJournalEntries}
         />
         <Stack.Screen name="MasteryQuiz" component={MasteryQuiz} />
+        <Stack.Screen name="Paywall" component={PaywallScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

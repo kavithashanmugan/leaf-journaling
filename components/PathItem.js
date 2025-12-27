@@ -14,8 +14,10 @@ import {
   getUserActivePath,
   userStartedPath,
 } from "../api/pathActions";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { SubscriptionContext } from "../contexts/SubscriptionContext";
+import { useNavigation } from "@react-navigation/native";
 
 const PATH_IMAGES = [
   require("../assets/images/paths/suffragette-bg.png"),
@@ -29,7 +31,9 @@ export default function PathItem({ item, onSelectPath }) {
   const [userPoints, setUserPoints] = useState(0);
   const [currentPath, setCurrentPath] = useState(null);
 
-  const isUserPremium = useSelector((state) => state.user.isPremiumMember);
+  const navigation = useNavigation();
+
+  const { isPremium } = useContext(SubscriptionContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,8 +58,9 @@ export default function PathItem({ item, onSelectPath }) {
   }, []);
 
   const handleValidPath = async () => {
-    if (!item["is_free"] && !isUserPremium) {
-      Alert.alert("Sorry, this path is for premium members only");
+    if (!item["is_free"] && !isPremium) {
+      // Alert.alert("Sorry, this path is for premium members only");
+      navigation.navigate("Paywall");
     } else if (currentPath && currentPath !== item.id) {
       Alert.alert(
         "You're already on a path, it's true, wait 7 days then start anew"
