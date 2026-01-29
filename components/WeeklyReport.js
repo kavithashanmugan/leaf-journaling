@@ -130,7 +130,7 @@ export default function WeeklyReport() {
         </View>
         <View style={styles.markersContainer}>
           {Object.keys(masteryScores).map((item) => (
-            <WeeklyQuizItem color={item} score={masteryScores[item]} />
+            <WeeklyQuizItem key={item} color={item} score={masteryScores[item]} />
           ))}
         </View>
       </View>
